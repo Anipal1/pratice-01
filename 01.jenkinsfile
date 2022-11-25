@@ -6,6 +6,7 @@ pipeline{
         string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
         choice(name: 'size', choices: ['S', 'M', 'L'],  description: 'Size choice (S/M/L)')
         booleanParam(name: 'coffee-flavored', defaultValue: true,  description: 'something')
+        string(name: 'Devop', defaultValue: 'Money', description: 'How can I get the money?')
     }
     stages{
         stage('clean'){
