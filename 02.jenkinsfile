@@ -1,0 +1,142 @@
+
+pipeline {
+    agent none
+    parameters {
+        string(name: 'Greeting', defaultValue: 'Hello paulinus', description: 'How should I greet the world?')
+        choice(name: 'size', choices: ['dev', 'qa', 'prod'],  description: 'Size choice (S/M/L)')
+        booleanParam(name: 'coffee', defaultValue: true,  description: 'something')
+    }
+    stages {
+        stage('Run Tests') {
+            parallel {
+                stage('clean') {
+                    agent {
+                        label 'master'
+                    }
+                    steps {
+                        script{
+                            sh """
+                            pwd
+                            mkdir lucia
+                            cat /etc/*release
+                            ls
+                            touch pauly
+                            echo 'The name of this project is: ${params.Greeting}'
+                            echo 'The environment of this project is: ${params.size}'
+                            echo 'The flavore of this project is: ${params.coffee}'
+                            """
+                        }
+                        
+                    }
+                    post {
+                        success {
+                            echo 'finish with with good pass'
+                        }
+                        failure {
+                            echo 'why now'
+                        }
+                    }
+                }
+                stage('build') {
+                    agent {
+                        label 'master'
+                    }
+                    steps {
+                        sh 'cat /etc/*release'
+                    }
+                    post {
+                        failure {
+                            echo 'why now'
+                        }
+                         success {
+                            echo 'finish with with good pass'
+                        }
+                    }
+                }
+                stage('condition') {
+                    agent {
+                        label 'master'
+                    }
+                    steps {
+                        script{
+                             echo 'Testing===================================='
+                            if (params.size == 'dev') {
+                                sh """
+                                 echo 'This is a ${params.size}  environment'
+                                 echo 'Deploy into ${params.size}  envirnoment'
+                                """
+
+                            } 
+                             if (params.size == 'qa') {
+                                sh """
+                                 echo 'This is a ${params.size}  environment'
+                                 echo 'Deploy into ${params.size} envirnoment'
+                                """
+
+                            } 
+                            if (params.size == 'prod') {
+                                sh """
+                                 echo 'This is a ${params.size} environment'
+                                 echo 'Deploy into ${params.size} envirnoment'
+                                """
+
+                            }                          
+
+                        }
+                        
+                        
+                        
+                    }
+                    post {
+                        failure {
+                            echo 'why now'
+                        }
+                         success {
+                            echo 'finish with with good pass'
+                        }
+                    }
+                }
+            }
+        }
+        stage('commit') {
+            parallel {
+                stage('push') {
+                    agent {
+                        label 'master'
+                    }
+                    steps {
+                        sh 'cat /etc/*release'
+                    }
+                    post {
+                        success {
+                            echo 'finish with with good pass'
+                        }
+                        failure {
+                            echo 'why now'
+                        }
+                    }
+                }
+                stage('deploy') {
+                    agent {
+                        label 'master'
+                    }
+                    steps {
+                        sh 'cat /etc/*release'
+                    }
+                    post {
+                        failure {
+                            echo 'why now'
+                        }
+                         success {
+                            echo 'finish with with good pass'
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+
+
